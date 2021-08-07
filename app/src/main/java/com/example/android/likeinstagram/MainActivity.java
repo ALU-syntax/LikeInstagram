@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
                     for (DocumentChange doc : value.getDocumentChanges()){
                         if(doc.getType() == DocumentChange.Type.ADDED){
-                            Post post = doc.getDocument().toObject(Post.class);
+                            String postId = doc.getDocument().getId();
+                            Post post = doc.getDocument().toObject(Post.class).withId(postId);
                             list.add(post);
                             adapter.notifyDataSetChanged();
                         }else{
