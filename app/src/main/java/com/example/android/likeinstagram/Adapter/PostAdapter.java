@@ -1,6 +1,7 @@
 package com.example.android.likeinstagram.Adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.android.likeinstagram.CommentsActivity;
 import com.example.android.likeinstagram.Model.Post;
 import com.example.android.likeinstagram.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -116,6 +119,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 }
             }
         });
+
+        //likes count
+        firestore.collection("Posts/" + postId +"/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                if (error == null){
+                    if (!value.isEmpty()){
+                        int count = value.size();
+                        holder.setPostLikes(count);
+                    }else {
+                        holder.setPostLikes(0 );
+                    }
+                }
+            }
+        });
+
+        //comment implementation
+        holder.commentsPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent commentIntent = new Intent(context, CommentsActivity.class);
+                commentIntent.putExtra("postid" , postId);
+                context.startActivity(commentIntent);
+            }
+        });
+
     }
 
     @Override
@@ -132,10 +161,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(itemView);
             mView = itemView;
             likePic = mView.findViewById(R.id.like_btn);
+            commentsPic = mView.findViewById(R.id.comments_post);
         }
         public void setPostLikes(int count){
             postLikes = mView.findViewById(R.id.like_count_tv);
-            postLikes.setText(count);
+            postLikes.setText(count + "Likes");
         }
         public void setPostPic(String urlPost){
             postPic = mView.findViewById(R.id.user_post);
