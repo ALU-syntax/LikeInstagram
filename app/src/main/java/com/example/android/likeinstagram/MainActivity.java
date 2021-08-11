@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.android.likeinstagram.Adapter.PostAdapter;
 import com.example.android.likeinstagram.Model.Post;
+import com.example.android.likeinstagram.Model.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Post> list;
     private Query query;
     private ListenerRegistration listenerRegistration;
+    private List<Users> usersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
         list = new ArrayList<>();
-        adapter = new PostAdapter(MainActivity.this, list);
+        usersList = new ArrayList<>();
+        adapter = new PostAdapter(MainActivity.this, list, usersList);
         mRecyclerView.setAdapter(adapter);
 
         fab = findViewById(R.id.floatingActionButton);
@@ -97,8 +100,21 @@ public class MainActivity extends AppCompatActivity {
                         if(doc.getType() == DocumentChange.Type.ADDED){
                             String postId = doc.getDocument().getId();
                             Post post = doc.getDocument().toObject(Post.class).withId(postId);
-                            list.add(post);
-                            adapter.notifyDataSetChanged();
+                            String postUserId = doc.getDocument().getString("user");
+                            firestore.collection("Users").document(postUserId).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()){
+                                               Users users = task.getResult().toObject(Users.class);
+                                               usersList.add(users);
+                                                list.add(post);
+                                                adapter.notifyDataSetChanged();
+                                            }else{
+                                                Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         }else{
                             adapter.notifyDataSetChanged();
                         }

@@ -9,22 +9,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.likeinstagram.Model.Comments;
+import com.example.android.likeinstagram.Model.Users;
 import com.example.android.likeinstagram.R;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder> {
 
     private Activity context;
-
+    private List<Users> usersList;
     private List<Comments> commentsList;
 
-    public CommentsAdapter (Activity context, List<Comments> commentsList){
+    public CommentsAdapter (Activity context, List<Comments> commentsList, List<Users> usersList){
          this.context = context;
          this.commentsList = commentsList;
+         this.usersList = usersList;
     }
     @NonNull
     @NotNull
@@ -38,8 +43,11 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     @Override
     public void onBindViewHolder(@NonNull @NotNull CommentsViewHolder holder, int position) {
         Comments comments = commentsList.get(position);
-
         holder.setmComment(comments.getComment());
+
+        Users users = usersList.get(position);
+        holder.setmUserName(users.getName());
+        holder.setCircleImageView(users.getImage());
     }
 
     @Override
@@ -48,15 +56,25 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     }
 
     public class CommentsViewHolder extends RecyclerView.ViewHolder{
-        TextView mComment;
+        TextView mComment, mUserName;
+        CircleImageView circleImageView;
         View mView;
 
         public CommentsViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            mView = itemView;
         }
         public void setmComment(String comment){
             mComment = mView.findViewById(R.id.comment_tv);
             mComment.setText(comment);
+        }
+        public void setmUserName(String userName){
+            mUserName = mView.findViewById(R.id.comment_user);
+            mUserName.setText(userName);
+        }
+        public void setCircleImageView(String profilePic){
+            circleImageView = mView.findViewById(R.id.comment_Profile_pic);
+            Glide.with(context).load(profilePic).into(circleImageView);
         }
     }
 }
