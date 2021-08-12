@@ -67,7 +67,7 @@ public class SetUpActivity extends AppCompatActivity {
 
         Uid = auth.getCurrentUser().getUid();
 
-        progressBar = findViewById(R.id.progress_bar);
+        progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
         circleImageView = findViewById(R.id.circleImageView);
         mProfileName = findViewById(R.id.profile_name);

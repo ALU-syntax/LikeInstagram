@@ -15,12 +15,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignInActivity extends AppCompatActivity {
 
     private EditText signInEmail , signInPass;
     private Button signInBtn;
     private TextView sign_up_text;
+    private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
 
     @Override
@@ -28,6 +30,7 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        firestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
         signInEmail = findViewById(R.id.sign_in_email);

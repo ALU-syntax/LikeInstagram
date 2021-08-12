@@ -107,7 +107,7 @@ public class CommentsActivity extends AppCompatActivity {
                     commentsMap.put("comment", comment);
                     commentsMap.put("time" , FieldValue.serverTimestamp());
                     commentsMap.put("user", currentUserId);
-                    firestore.collection("Posts" + post_id + "/Comments").add(commentsMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    firestore.collection("Posts/" + post_id + "/Comments").add(commentsMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                         @Override
                         public void onComplete(@NonNull @NotNull Task<DocumentReference> task) {
                             if (task.isSuccessful()){
