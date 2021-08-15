@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignInActivity extends AppCompatActivity {
@@ -24,6 +25,7 @@ public class SignInActivity extends AppCompatActivity {
     private TextView sign_up_text;
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,11 @@ public class SignInActivity extends AppCompatActivity {
 
         firestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser!=null){
+            startActivity(new Intent(this,MainActivity.class));
+            finish();
+        }
 
         signInEmail = findViewById(R.id.sign_in_email);
         signInPass = findViewById(R.id.sing_in_pass);
